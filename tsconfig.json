@@ -11,5 +11,9 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true
-  }
+  },
+  "exclude": [
+    "src/legacy",
+    "src/renderer.ts"
+  ]
 }

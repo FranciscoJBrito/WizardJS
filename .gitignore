@@ -90,3 +90,8 @@ typings/
 
 # Electron-Forge
 out/
+
+# Docker local debugs
+Dockerfile
+.dockerignore
+debug-linux.sh

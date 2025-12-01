@@ -1,6 +1,7 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell, dialog } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import { autoUpdater } from 'electron-updater';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -193,10 +194,80 @@ const createMenu = () => {
   Menu.setApplicationMenu(menu);
 };
 
+// ============================================
+// Auto-Update Configuration
+// ============================================
+function setupAutoUpdater() {
+  // Configurar logging
+  autoUpdater.logger = console;
+  
+  // No descargar automáticamente, preguntar primero
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for updates...');
+  });
+
+  autoUpdater.on('update-available', (info: { version: string }) => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Actualización disponible',
+      message: `Una nueva versión (${info.version}) está disponible. ¿Deseas descargarla ahora?`,
+      buttons: ['Descargar', 'Más tarde'],
+      defaultId: 0,
+    }).then((result) => {
+      if (result.response === 0) {
+        autoUpdater.downloadUpdate();
+      }
+    });
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    console.log('No updates available.');
+  });
+
+  autoUpdater.on('download-progress', (progressObj: { percent: number }) => {
+    console.log(`Download progress: ${progressObj.percent.toFixed(1)}%`);
+  });
+
+  autoUpdater.on('update-downloaded', (info: { version: string }) => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Actualización lista',
+      message: `La versión ${info.version} se ha descargado. ¿Reiniciar ahora para instalar?`,
+      buttons: ['Reiniciar', 'Más tarde'],
+      defaultId: 0,
+    }).then((result) => {
+      if (result.response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+  });
+
+  autoUpdater.on('error', (err: Error) => {
+    console.error('Auto-updater error:', err);
+  });
+
+  // Verificar actualizaciones después de 3 segundos
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((err: Error) => {
+      console.error('Failed to check for updates:', err);
+    });
+  }, 3000);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+  
+  // Solo verificar actualizaciones en producción
+  if (process.env.NODE_ENV !== 'development') {
+    setupAutoUpdater();
+  }
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

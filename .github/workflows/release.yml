@@ -54,7 +54,7 @@ jobs:
           npm install
         
       - name: Build application
-        run: npm run make
+        run: npm run make -- --arch=${{ matrix.arch }}
         env:
           NODE_ENV: production
         
@@ -96,13 +96,22 @@ jobs:
         run: |
           mkdir -p ./release-files
           
-          # Copy and rename files for release
-          find ./artifacts -name "*.dmg" -exec cp {} ./release-files/ \;
-          find ./artifacts -name "*.zip" -exec cp {} ./release-files/ \;
-          find ./artifacts -name "*.exe" -exec cp {} ./release-files/ \;
-          find ./artifacts -name "*.deb" -exec cp {} ./release-files/ \;
-          find ./artifacts -name "*.rpm" -exec cp {} ./release-files/ \;
-          find ./artifacts -name "*.AppImage" -exec cp {} ./release-files/ \;
+          # macOS Intel (ZIP only - DMG requires Apple Developer ID)
+          for f in $(find ./artifacts/wizardjs-macOS-Intel -name "*.zip" 2>/dev/null); do
+            cp "$f" "./release-files/WizardJS-macOS-Intel.zip"
+          done
+          
+          # macOS Apple Silicon (ZIP only - DMG requires Apple Developer ID)
+          for f in $(find ./artifacts/wizardjs-macOS-AppleSilicon -name "*.zip" 2>/dev/null); do
+            cp "$f" "./release-files/WizardJS-macOS-AppleSilicon.zip"
+          done
+          
+          # Windows
+          find ./artifacts/wizardjs-Windows -name "*.exe" -exec cp {} ./release-files/ \; 2>/dev/null || true
+          
+          # Linux
+          find ./artifacts/wizardjs-Linux -name "*.deb" -exec cp {} ./release-files/ \; 2>/dev/null || true
+          find ./artifacts/wizardjs-Linux -name "*.rpm" -exec cp {} ./release-files/ \; 2>/dev/null || true
           
           echo "Files prepared for release:"
           ls -la ./release-files/
@@ -127,9 +136,8 @@ jobs:
             ### 📦 Downloads
             
             **macOS:**
-            - Intel Macs: Download the `.dmg` file for x64
-            - Apple Silicon (M1/M2): Download the `.dmg` file for arm64
-            - Portable: Download the `.zip` file
+            - **Intel Macs:** Download `WizardJS-macOS-Intel.zip`
+            - **Apple Silicon (M1/M2/M3):** Download `WizardJS-macOS-AppleSilicon.zip`
             
             **Windows:**
             - Download the `.exe` installer
@@ -147,7 +155,7 @@ jobs:
             - Persistent configuration
             
             ### 🔧 Installation
-            - **macOS**: Open the `.dmg` file and drag WizardJS to Applications
+            - **macOS**: Unzip the file, then drag WizardJS.app to Applications. On first launch, right-click → Open to bypass Gatekeeper.
             - **Windows**: Run the `.exe` installer
             - **Linux**: Install the `.deb` or `.rpm` package using your package manager
             

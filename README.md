@@ -44,15 +44,38 @@
 - **Detailed timestamps** and log types
 
 ### User Experience
+- **Multi-tab support** with independent editors
+- **Resizable split panels** between editor and output
 - **Complete file management** (New, Open, Save)
+- **Stop button** to interrupt running code
 - **Professional keyboard shortcuts**
 - **Intuitive settings panel**
 - **Responsive and modern interface**
 
-## Quick Start
+## Download
+
+Get the latest release for your platform:
+
+| Platform | Download |
+|----------|----------|
+| **macOS (Apple Silicon)** | [WizardJS-macOS-AppleSilicon.zip](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+| **macOS (Intel)** | [WizardJS-macOS-Intel.zip](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+| **Windows** | [WizardJS-Setup.exe](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+| **Linux (Debian/Ubuntu)** | [wizardjs.deb](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+| **Linux (RedHat/Fedora)** | [wizardjs.rpm](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+
+### macOS Installation
+1. Download the ZIP for your chip (Apple Silicon or Intel)
+2. Unzip the file
+3. Drag `WizardJS.app` to `/Applications`
+4. First launch: Right-click → Open (to bypass Gatekeeper)
+
+---
+
+## Development
 
 ### Prerequisites
-- **Node.js** (version 18 or higher)
+- **Node.js** (version 20 or higher)
 - **npm** (included with Node.js)
 - **macOS, Windows, or Linux**
 
@@ -76,6 +99,10 @@ npm run dev
 # Create executable for your platform
 npm run make
 
+# Build for specific architecture (macOS)
+npm run make -- --arch=arm64  # Apple Silicon
+npm run make -- --arch=x64    # Intel
+
 # Package only (without installer)
 npm run package
 
@@ -95,8 +122,9 @@ npm run clean
 | Action | Shortcut | Description |
 |--------|----------|-------------|
 | **Execute** | `⌘R` / `Ctrl+R` | Runs the current code |
+| **Stop** | `⌘.` / `Ctrl+.` | Stops code execution |
 | **Save** | `⌘S` / `Ctrl+S` | Saves the current file |
-| **New** | `⌘N` / `Ctrl+N` | Creates a new file |
+| **New Tab** | `⌘T` / `Ctrl+T` | Creates a new tab |
 | **Open** | `⌘O` / `Ctrl+O` | Opens an existing file |
 | **Clear** | `⌘K` / `Ctrl+K` | Clears the output |
 | **Settings** | `⌘,` / `Ctrl+,` | Opens the settings panel |
@@ -126,13 +154,36 @@ npm run clean
 ```
 wizardjs/
 ├── src/
-│   ├── main.ts          # Electron main process
-│   ├── renderer.ts      # Interface logic
-│   ├── preload.ts       # Preload script
-│   └── index.css        # Application styles
-├── index.html           # Main HTML structure
-├── package.json         # Dependencies and scripts
-└── forge.config.ts      # Electron Forge configuration
+│   ├── main.ts                    # Electron main process
+│   ├── preload.ts                  # Preload script
+│   ├── index.css                   # Application styles
+│   └── renderer/
+│       ├── index.ts                # Renderer entry point
+│       ├── app/
+│       │   └── WizardJSApp.ts      # Main application class
+│       ├── core/
+│       │   ├── EditorManager.ts    # Monaco editor management
+│       │   ├── ExecutionEngine.ts  # Code execution engine
+│       │   ├── TabsManager.ts      # Tab state management
+│       │   └── Themes.ts           # Editor themes
+│       ├── ui/
+│       │   ├── Output.ts           # Output panel
+│       │   ├── SettingsPanel.ts    # Settings UI
+│       │   ├── SplitResizer.ts     # Panel resizing
+│       │   ├── TabsView.ts         # Tabs UI
+│       │   └── Toolbar.ts          # Toolbar buttons
+│       ├── services/
+│       │   ├── I18n.ts             # Internationalization
+│       │   └── SettingsStore.ts    # Settings persistence
+│       ├── utils/
+│       │   ├── codeGuards.ts       # Security guards
+│       │   └── tsHelpers.ts        # TypeScript helpers
+│       └── config/
+│           ├── constants.ts        # App constants
+│           └── types.ts            # TypeScript types
+├── index.html                      # Main HTML structure
+├── package.json                    # Dependencies and scripts
+└── forge.config.ts                 # Electron Forge configuration
 ```
 
 ## Contributing

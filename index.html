@@ -1,78 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <title>WizardJS - JavaScript Playground</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
     <div id="app">
-      <!-- Sidebar minimalista -->
-      <aside class="sidebar">
-        <div class="sidebar-top">
-           <!-- Logo removido para evitar superposición con controles de ventana -->
-        </div>
-        
-        <nav class="sidebar-nav">
-          <button id="runBtn" class="sidebar-btn" title="Ejecutar (⌘R)">
-            <i class="fas fa-play"></i>
-          </button>
-          <button id="newBtn" class="sidebar-btn" title="Nuevo archivo (⌘N)">
-            <i class="fas fa-file"></i>
-          </button>
-          <button id="openBtn" class="sidebar-btn" title="Abrir archivo (⌘O)">
-            <i class="fas fa-folder-open"></i>
-          </button>
-          <button id="saveBtn" class="sidebar-btn" title="Guardar (⌘S)">
-            <i class="fas fa-save"></i>
-          </button>
-          <div class="sidebar-divider"></div>
-          <button id="clearBtn" class="sidebar-btn" title="Limpiar salida (⌘K)">
-            <i class="fas fa-trash"></i>
-          </button>
-        </nav>
-        
-        <div class="sidebar-bottom">
-           <button id="settingsBtn" class="sidebar-btn" title="Configuración (⌘,)">
-             <i class="fas fa-cog"></i>
-           </button>
-        </div>
-      </aside>
-        
-      <!-- Contenido principal -->
-      <main class="main-content">
-        <!-- Barra de tabs -->
-        <div class="tabs-bar">
-          <div class="tabs-list">
-            <div class="tab active" data-tab-id="tab-1">
-              <span class="tab-title">Untitled-1</span>
-              <button class="tab-close" title="Cerrar tab">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+      <!-- Barra de tabs -->
+      <div class="tabs-bar">
+        <div class="tabs-list"></div>
+        <button class="add-tab-btn" title="Nuevo tab (⌘T)">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- Workspace: sidebar + main content -->
+      <div class="workspace">
+        <aside class="sidebar">
+          <nav class="sidebar-nav">
+            <button id="runBtn" class="sidebar-btn" title="Ejecutar (⌘R)">
+              <i class="fas fa-play"></i>
+            </button>
+            <button id="stopBtn" class="sidebar-btn sidebar-btn-stop" title="Detener ejecución (⌘.)">
+              <i class="fas fa-stop"></i>
+            </button>
+            <button id="newBtn" class="sidebar-btn" title="Nuevo archivo (⌘N)">
+              <i class="fas fa-file"></i>
+            </button>
+            <button id="openBtn" class="sidebar-btn" title="Abrir archivo (⌘O)">
+              <i class="fas fa-folder-open"></i>
+            </button>
+            <button id="saveBtn" class="sidebar-btn" title="Guardar (⌘S)">
+              <i class="fas fa-save"></i>
+            </button>
+            <div class="sidebar-divider"></div>
+            <button
+              id="clearBtn"
+              class="sidebar-btn"
+              title="Limpiar salida (⌘K)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <button
+              id="settingsBtn"
+              class="sidebar-btn"
+              title="Configuración (⌘,)"
+            >
+              <i class="fas fa-cog"></i>
+            </button>
           </div>
-          <button class="add-tab-btn" title="Nuevo tab (⌘T)">
-            <i class="fas fa-plus"></i>
-          </button>
-        </div>
-        
-        <!-- Contenido de los tabs -->
-        <div class="tabs-content">
-          <div class="tab-pane active" data-tab-id="tab-1">
-            <div class="split-view">
-              <div class="split-panel editor-panel">
-                <div class="editor-container" data-tab-id="tab-1"></div>
-              </div>
-              
-              <div class="split-divider"></div>
-              
-              <div class="split-panel output-panel">
-                <div class="output-container" data-tab-id="tab-1"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+          <!-- Contenido de los tabs -->
+          <div class="tabs-content"></div>
+        </main>
+      </div>
     </div>
 
     <!-- Panel de Configuraciones (fuera del app) -->
@@ -96,14 +87,16 @@
                 </select>
               </div>
             </div>
-            
+
             <div class="settings-section">
               <h4>Apariencia</h4>
               <div class="setting-item">
                 <label>Tema:</label>
                 <select id="theme-select">
                   <option value="github-dark">GitHub Dark</option>
-                  <option value="tomorrow-night-bright">Tomorrow Night Bright</option>
+                  <option value="tomorrow-night-bright">
+                    Tomorrow Night Bright
+                  </option>
                 </select>
               </div>
               <div class="setting-item">
@@ -118,47 +111,56 @@
               </div>
               <div class="setting-item">
                 <label>Tamaño de fuente:</label>
-                <input type="range" id="font-size-input" min="10" max="24" value="14">
-                <span id="font-size-value">14px</span>
+                <div class="font-size-input-wrapper">
+                  <input
+                    type="number"
+                    id="font-size-input"
+                    min="8"
+                    max="32"
+                    value="14"
+                    class="font-size-input"
+                  />
+                  <span class="font-size-unit">px</span>
+                </div>
               </div>
             </div>
-            
+
             <div class="settings-section">
               <h4>Editor</h4>
               <div class="setting-item">
                 <label>
-                  <input type="checkbox" id="word-wrap-toggle" checked>
+                  <input type="checkbox" id="word-wrap-toggle" checked />
                   Ajuste de línea automático
                 </label>
               </div>
               <div class="setting-item">
-               <label>
-                 <input type="checkbox" id="minimap-toggle">
-                 Mostrar minimap
-               </label>
-             </div>
-             <div class="setting-item">
                 <label>
-                  <input type="checkbox" id="auto-run-toggle" checked>
+                  <input type="checkbox" id="minimap-toggle" />
+                  Mostrar minimap
+                </label>
+              </div>
+              <div class="setting-item">
+                <label>
+                  <input type="checkbox" id="auto-run-toggle" checked />
                   Auto-ejecución en tiempo real
                 </label>
               </div>
               <div class="setting-item">
-                 <label>
-                   <input type="checkbox" id="line-numbers-toggle">
-                   Mostrar números de línea
-                 </label>
-               </div>
+                <label>
+                  <input type="checkbox" id="line-numbers-toggle" />
+                  Mostrar números de línea
+                </label>
+              </div>
               <div class="setting-item">
                 <label>Tamaño de tab:</label>
-                <select id="tab-size-input">
+                <select id="tab-size-select">
                   <option value="2">2 espacios</option>
                   <option value="4">4 espacios</option>
                   <option value="8">8 espacios</option>
                 </select>
               </div>
             </div>
-            
+
             <div class="settings-section">
               <h4>Atajos de teclado</h4>
               <div class="shortcut-item">
@@ -183,6 +185,6 @@
       </div>
     </div>
 
-    <script type="module" src="/src/renderer.ts"></script>
+    <script type="module" src="/src/renderer/index.ts"></script>
   </body>
 </html>
