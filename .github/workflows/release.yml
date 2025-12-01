@@ -155,9 +155,17 @@ jobs:
             - Persistent configuration
             
             ### 🔧 Installation
-            - **macOS**: Unzip the file, then drag WizardJS.app to Applications. On first launch, right-click → Open to bypass Gatekeeper.
-            - **Windows**: Run the `.exe` installer
-            - **Linux**: Install the `.deb` or `.rpm` package using your package manager
+            
+            **macOS** (unsigned app - requires extra step):
+            1. Unzip and move `WizardJS.app` to `/Applications`
+            2. Open Terminal and run: `xattr -cr /Applications/WizardJS.app`
+            3. Open the app normally
+            
+            > ⚠️ This step is required because the app is not signed with an Apple Developer ID ($99/year). See [README](https://github.com/FranciscoJBrito/WizardJS#macos-installation) for details.
+            
+            **Windows:** Run the `.exe` installer
+            
+            **Linux:** Install the `.deb` or `.rpm` package using your package manager
             
             ---
             

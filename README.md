@@ -65,10 +65,38 @@ Get the latest release for your platform:
 | **Linux (RedHat/Fedora)** | [wizardjs.rpm](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
 
 ### macOS Installation
-1. Download the ZIP for your chip (Apple Silicon or Intel)
-2. Unzip the file
-3. Drag `WizardJS.app` to `/Applications`
-4. First launch: Right-click → Open (to bypass Gatekeeper)
+
+> ⚠️ **Important Note for macOS Users**
+> 
+> WizardJS is not signed with an Apple Developer ID certificate ($99/year). This is an open-source project and we prefer to invest resources in development rather than certificates. As a result, macOS will show a security warning when you try to open the app.
+
+**Step-by-step installation:**
+
+1. **Download** the ZIP for your chip:
+   - Apple Silicon (M1/M2/M3): `WizardJS-macOS-AppleSilicon.zip`
+   - Intel: `WizardJS-macOS-Intel.zip`
+
+2. **Unzip** the downloaded file
+
+3. **Move** `WizardJS.app` to `/Applications`
+
+4. **Remove the quarantine attribute** (required for unsigned apps):
+   
+   Open Terminal and run:
+   ```bash
+   xattr -cr /Applications/WizardJS.app
+   ```
+
+5. **Open the app** - It should now launch without issues
+
+**Why is this necessary?**
+
+When you download an app from the internet, macOS adds a "quarantine" attribute. Without an Apple Developer ID signature ($99/year), macOS marks the app as "damaged" even though it's perfectly safe. The `xattr -cr` command removes this quarantine flag.
+
+**Alternative method (if the above doesn't work):**
+1. Try to open the app (it will fail)
+2. Go to **System Preferences → Security & Privacy → General**
+3. Click **"Open Anyway"** next to the WizardJS message
 
 ---
 
