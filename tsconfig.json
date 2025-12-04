@@ -10,10 +10,12 @@
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true
   },
   "exclude": [
     "src/legacy",
-    "src/renderer.ts"
+    "src/renderer/services/renderer.ts"
   ]
 }
