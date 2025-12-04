@@ -28,7 +28,7 @@ export function mountLanguageHandler() {
       lng: initialLanguage,
       debug: true,
       backend: {
-        loadPath: '/src/locales/{{lng}}/{{ns}}.json',
+        loadPath: './locales/{{lng}}/{{ns}}.json',
       }
   };
 
