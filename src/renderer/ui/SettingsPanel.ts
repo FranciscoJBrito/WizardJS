@@ -1,9 +1,7 @@
 import { SettingsStore } from "../services/SettingsStore";
-import { I18n } from "../services/I18n";
 
 export function mountSettingsUI(
   store: SettingsStore,
-  i18n: I18n,
   onChange: () => void
 ) {
   const $ = (id: string) => document.getElementById(id)!;
@@ -68,12 +66,7 @@ export function mountSettingsUI(
     store.save({ tabSize: parseInt(tab.value, 10) });
     onChange();
   };
-  const lang = $("language-select") as HTMLSelectElement;
-  lang.value = s.language;
-  lang.onchange = () => {
-    store.save({ language: lang.value as any });
-    i18n.setLanguage(lang.value as any);
-  };
+  // language selection is currently handled in ../services/I18n.ts
   const ff = $("font-family-select") as HTMLSelectElement;
   ff.value = s.fontFamily;
   ff.onchange = () => {

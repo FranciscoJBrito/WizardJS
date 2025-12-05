@@ -1,79 +1,68 @@
-type Dict = Record<string, string>;
+import { use, t, changeLanguage, InitOptions } from 'i18next';
+import Backend from 'i18next-http-backend';
+import { SettingsStore } from './SettingsStore';
 
-const en: Dict = {
-  file: "File",
-  new: "New",
-  open: "Open",
-  save: "Save",
-  settings: "Settings",
-  theme: "Theme",
-  fontSize: "Font Size",
-  fontFamily: "Font Family",
-  language: "Language",
-  lineNumbers: "Line Numbers",
-  run: "Run",
-  clear: "Clear",
-  runTooltip: "Run (⌘R)",
-  newTooltip: "New file (⌘N)",
-  openTooltip: "Open file (⌘O)",
-  saveTooltip: "Save (⌘S)",
-  clearTooltip: "Clear output (⌘K)",
-  settingsTooltip: "Settings (⌘,)",
-  general: "General",
-  appearance: "Appearance",
-  editor: "Editor",
-  font: "Font",
-  tabSize: "Tab Size",
-  wordWrap: "Word Wrap",
-  minimap: "Show Minimap",
-  autoRun: "Real-time Auto-execution",
-  shortcuts: "Keyboard Shortcuts",
-  runCode: "Run code:",
-  newTab: "New tab:",
-  saveFile: "Save:",
-  openSettings: "Settings:",
-};
+function updateContent() {
 
-const es: Dict = {
-  file: "Archivo",
-  new: "Nuevo",
-  open: "Abrir",
-  save: "Guardar",
-  settings: "Configuración",
-  theme: "Tema",
-  fontSize: "Tamaño de Fuente",
-  fontFamily: "Familia de Fuente",
-  language: "Idioma",
-  lineNumbers: "Números de Línea",
-  run: "Ejecutar",
-  clear: "Limpiar",
-  runTooltip: "Ejecutar (⌘R)",
-  newTooltip: "Nuevo archivo (⌘N)",
-  openTooltip: "Abrir archivo (⌘O)",
-  saveTooltip: "Guardar (⌘S)",
-  clearTooltip: "Limpiar salida (⌘K)",
-  settingsTooltip: "Configuración (⌘,)",
-  general: "General",
-  appearance: "Apariencia",
-  editor: "Editor",
-  font: "Fuente",
-  tabSize: "Tamaño de Tab",
-  wordWrap: "Ajuste de línea automático",
-  minimap: "Mostrar minimap",
-  autoRun: "Auto-ejecución en tiempo real",
-  shortcuts: "Atajos de teclado",
-  runCode: "Ejecutar código:",
-  newTab: "Nuevo tab:",
-  saveFile: "Guardar:",
-  openSettings: "Configuraciones:",
-};
+  document.querySelectorAll('[data-i18n]').forEach((element: Element) => {
+    const htmlElement = element as HTMLElement;
+    const key = htmlElement.getAttribute('data-i18n');
+    htmlElement.innerText = t(key ?? '???');  // if the selector matches, there is also a key
+  });
 
-export class I18n {
-  constructor(private lang: "en" | "es" = "en") {}
-  setLanguage(l: "en" | "es") {
-    this.lang = l;
+  document.querySelectorAll('[data-title-i18n]').forEach((element: Element) => {
+    const htmlElement = element as HTMLElement;
+    const key = htmlElement.getAttribute('data-title-i18n');
+    htmlElement.title = t(key ?? '???');  // if the selector matches, there is also a key
+  });
+
+}
+
+export function mountLanguageHandler() {
+
+  const store = new SettingsStore();
+  const initialLanguage = store.load().language ?? 'en';
+
+  const config: InitOptions = {
+      fallbackLng: 'en',
+      lng: initialLanguage,
+      debug: true,
+      backend: {
+        loadPath: './locales/{{lng}}/{{ns}}.json',
+      }
+  };
+
+  use(Backend)
+    .init(config, error => {
+      if (error) {
+        // TODO: handling error
+        return console.error(error);
+      }
+      console.log('update content');
+      updateContent();
+    });
+
+  const languageSelector = document.getElementById('language-select') as HTMLSelectElement;
+
+  if (languageSelector) {
+
+    languageSelector.value = initialLanguage;
+
+    languageSelector.addEventListener('change', (event: Event) => {
+
+      const element = event.target as HTMLSelectElement
+      const selectedLanguage = element.value;
+
+      changeLanguage(selectedLanguage, () => {
+        updateContent();
+      });
+
+      store.save({
+        'language': selectedLanguage,
+      });
+
+    });
+
   }
-  t(key: string) {
-    return (this.lang === "es" ? es[key] : en[key]) ?? key;
-  }
+
 }

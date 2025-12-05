@@ -18,7 +18,7 @@ const config: ForgeConfig = {
     protocols: [{
       name: 'WizardJS',
       schemes: ['wizardjs']
-    }]
+    }],
   },
   rebuildConfig: {},
   makers: [

@@ -1,5 +1,4 @@
 import { SettingsStore } from "../services/SettingsStore";
-import { I18n } from "../services/I18n";
 import { configureMonaco } from "../core/MonacoConfig";
 import { registerThemes } from "../core/Themes";
 import { EditorManager } from "../core/EditorManager";
@@ -18,10 +17,10 @@ import { appendOutput, clearOutput, appendSecurity } from "../ui/Output";
 import { AUTO_RUN_DELAY } from "../config/constants";
 import { ExecutionEngine } from "../core/ExecutionEngine";
 import "../config/electron.d.ts";
+import { mountLanguageHandler } from "../services/I18n";
 
 export class WizardJSApp {
   private store = new SettingsStore();
-  private i18n = new I18n(this.store.load().language as any);
   private editors = new EditorManager(() => this.store.get());
   private tabs = new TabsManager();
   private engine = new ExecutionEngine();
@@ -54,7 +53,8 @@ export class WizardJSApp {
     
     // Inicializar split resizer (usa event delegation, funciona con elementos dinámicos)
     mountSplitResizer();
-    mountSettingsUI(this.store, this.i18n, () => this.applyEditorSettings());
+    mountLanguageHandler();
+    mountSettingsUI(this.store, () => this.applyEditorSettings());
     mountTabsHandlers(
       this.tabs,
       this.editors,
