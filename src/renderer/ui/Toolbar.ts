@@ -7,7 +7,9 @@ export function mountToolbar(
   onStop?: () => void
 ) {
   document.getElementById("runBtn")?.addEventListener("click", onRun);
-  document.getElementById("stopBtn")?.addEventListener("click", () => onStop?.());
+  document
+    .getElementById("stopBtn")
+    ?.addEventListener("click", () => onStop?.());
   document.getElementById("clearBtn")?.addEventListener("click", onClear);
   document.getElementById("newBtn")?.addEventListener("click", onNew);
   document.getElementById("openBtn")?.addEventListener("click", onOpen);

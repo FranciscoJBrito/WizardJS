@@ -7,6 +7,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="./src/index.css" />
   </head>
   <body>
     <div id="app">
@@ -22,19 +23,39 @@
       <div class="workspace">
         <aside class="sidebar">
           <nav class="sidebar-nav">
-            <button id="runBtn" class="sidebar-btn" data-title-i18n="runTooltip">
+            <button
+              id="runBtn"
+              class="sidebar-btn"
+              data-title-i18n="runTooltip"
+            >
               <i class="fas fa-play"></i>
             </button>
-            <button id="stopBtn" class="sidebar-btn sidebar-btn-stop" data-title-i18n="stopTooltip">
+            <button
+              id="stopBtn"
+              class="sidebar-btn sidebar-btn-stop"
+              data-title-i18n="stopTooltip"
+            >
               <i class="fas fa-stop"></i>
             </button>
-            <button id="newBtn" class="sidebar-btn" data-title-i18n="newTooltip">
+            <button
+              id="newBtn"
+              class="sidebar-btn"
+              data-title-i18n="newTooltip"
+            >
               <i class="fas fa-file"></i>
             </button>
-            <button id="openBtn" class="sidebar-btn" data-title-i18n="openTooltip">
+            <button
+              id="openBtn"
+              class="sidebar-btn"
+              data-title-i18n="openTooltip"
+            >
               <i class="fas fa-folder-open"></i>
             </button>
-            <button id="saveBtn" class="sidebar-btn" data-title-i18n="saveTooltip">
+            <button
+              id="saveBtn"
+              class="sidebar-btn"
+              data-title-i18n="saveTooltip"
+            >
               <i class="fas fa-save"></i>
             </button>
             <div class="sidebar-divider"></div>
@@ -154,11 +175,29 @@
                 </label>
               </div>
               <div class="setting-item">
+                <label>
+                  <input type="checkbox" id="show-output-lines-toggle" />
+                  <span data-i18n="showOutputLines"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <label>
+                  <input type="checkbox" id="show-undefined-toggle" />
+                  <span data-i18n="showUndefined"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <label>
+                  <input type="checkbox" id="show-magic-comments-toggle" />
+                  <span data-i18n="showMagicComments"></span>
+                </label>
+              </div>
+              <div class="setting-item">
                 <label data-i18n="tabSize"></label>
                 <select id="tab-size-select">
                   <option value="2">2 <span data-i18n="tabsLC"></span></option>
                   <option value="4">4 <span data-i18n="tabsLC"></span></option>
-                  <option value="8">8  <span data-i18n="tabsLC"></span></option>
+                  <option value="8">8 <span data-i18n="tabsLC"></span></option>
                 </select>
               </div>
             </div>
@@ -167,19 +206,19 @@
               <h4 data-i18n="shortcuts"></h4>
               <div class="shortcut-item">
                 <span data-i18n="runCode"></span>
-                <kbd>⌘R</kbd>
+                <kbd>Ctrl + Enter</kbd>
               </div>
               <div class="shortcut-item">
                 <span data-i18n="newTab"></span>
-                <kbd>⌘T</kbd>
+                <kbd>Ctrl + T</kbd>
               </div>
               <div class="shortcut-item">
                 <span data-i18n="saveFile"></span>
-                <kbd>⌘S</kbd>
+                <kbd>Ctrl + S</kbd>
               </div>
               <div class="shortcut-item">
                 <span data-i18n="openSettings"></span>
-                <kbd>⌘,</kbd>
+                <kbd>Ctrl + ,</kbd>
               </div>
             </div>
           </div>

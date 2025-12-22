@@ -1,43 +1,49 @@
 import * as monaco from "monaco-editor";
-
+import { getSchemeCSS } from "../utils/utilsCss";
 export function registerThemes() {
+  const schemeCSS = getSchemeCSS(); // <-- aquí ya existen los valores
+
+  function formatHex(color: string) {
+    return color.replace("#", "").padStart(6, "0");
+  }
+
   monaco.editor.defineTheme("github-dark", {
     base: "vs-dark",
     inherit: true,
     rules: [
-      { token: "comment", foreground: "7d8590" },
-      { token: "keyword", foreground: "ff7b72" },
-      { token: "string", foreground: "a5d6ff" },
-      { token: "number", foreground: "79c0ff" },
-      { token: "regexp", foreground: "7ee787" },
-      { token: "operator", foreground: "ff7b72" },
-      { token: "namespace", foreground: "ffa657" },
-      { token: "type", foreground: "ffa657" },
-      { token: "class", foreground: "ffa657" },
-      { token: "function", foreground: "d2a8ff" },
+      {
+        token: "comment",
+        foreground: schemeCSS["--text-secondary"],
+        fontStyle: "italic",
+      },
+      {
+        token: "keyword",
+        foreground: schemeCSS["--accent-purple"],
+      },
+      {
+        token: "string",
+        foreground: schemeCSS["--accent-blue"],
+      },
+      {
+        token: "number",
+        foreground: schemeCSS["--accent-orange"],
+      },
+      {
+        token: "regexp",
+        foreground: schemeCSS["--accent-red"],
+      },
+      { token: "operator", foreground: schemeCSS["--accent-red"] },
+      { token: "namespace", foreground: schemeCSS["--accent-yellow"] },
+      { token: "type", foreground: schemeCSS["--accent-yellow"] },
+      { token: "class", foreground: schemeCSS["--accent-yellow"] },
+      { token: "function", foreground: schemeCSS["--accent-purple"] },
     ],
     colors: {
-      "editor.background": "#000000",
-      "editor.foreground": "#e6edf3",
-      "editor.selectionBackground": "#264f78",
-      "editorCursor.foreground": "#e6edf3",
-      "editor.lineHighlightBackground": "#21262d50",
-    },
-  });
-
-  monaco.editor.defineTheme("tomorrow-night-bright", {
-    base: "vs-dark",
-    inherit: true,
-    rules: [
-      { token: "comment", foreground: "969896", fontStyle: "italic" },
-      { token: "keyword", foreground: "d54e53" },
-      { token: "string", foreground: "b9ca4a" },
-    ],
-    colors: {
-      "editor.background": "#000000",
-      "editor.foreground": "#eaeaea",
-      "editor.selectionBackground": "#424242",
-      "editor.lineHighlightBackground": "#2a2a2a",
+      "editor.background": schemeCSS["--bg-primary"],
+      "editor.foreground": schemeCSS["--text-primary"],
+      "editor.selectionBackground": schemeCSS["--bg-active"],
+      "editorCursor.foreground": schemeCSS["--text-primary"],
+      "editor.lineHighlightBackground": schemeCSS["--bg-secondary"] + "50",
     },
   });
 }

@@ -8,8 +8,11 @@ export const DEFAULT_SETTINGS = {
   fontSize: 14,
   wordWrap: true,
   minimap: false,
-  lineNumbers: false,
+  lineNumbers: true,
   tabSize: 2,
   fontFamily: "JetBrains Mono",
   language: "en",
+  showOutputLines: true,
+  showUndefined: false,
+  magicComments: true,
 } as const;

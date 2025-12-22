@@ -1,7 +1,7 @@
 {
   "name": "wizardjs",
   "productName": "WizardJS",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "WizardJS - The Ultimate JavaScript & TypeScript Playground",
   "main": ".vite/build/main.js",
   "homepage": "https://github.com/FranciscoJBrito/WizardJS",
@@ -49,6 +49,7 @@
     "@electron-forge/plugin-fuses": "^7.8.3",
     "@electron-forge/plugin-vite": "^7.8.3",
     "@electron/fuses": "^1.8.0",
+    "@reforged/maker-appimage": "^5.1.1",
     "@types/babel__code-frame": "^7.0.6",
     "@types/electron-squirrel-startup": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -66,6 +67,7 @@
     "i18next": "^25.7.1",
     "i18next-http-backend": "^3.0.2",
     "monaco-editor": "^0.52.2",
+    "monaco-editor-themes": "^1.0.0",
     "vite-plugin-monaco-editor": "^1.1.0"
   }
 }
