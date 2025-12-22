@@ -15,7 +15,7 @@ import {
 } from "../ui/TabsView";
 import { appendOutput, clearOutput, appendSecurity } from "../ui/Output";
 import { AUTO_RUN_DELAY } from "../config/constants";
-import { ExecutionEngine } from "../core/ExecutionEngine";
+import { ExecutionEngine } from "../core/executionEngine";
 import "../config/electron.d.ts";
 import { mountLanguageHandler } from "../services/I18n";
 
@@ -29,10 +29,10 @@ export class WizardJSApp {
   constructor() {
     configureMonaco();
     registerThemes();
-    
+
     // Configurar callback global para auto-run en todos los editores
     this.editors.setOnContentChange((tabId) => this.scheduleAutoRun(tabId));
-    
+
     const first = this.tabs.initFirstTab(this.getWelcomeCode());
     addTabDom(first, "Untitled-1");
     addPaneDom(first);
@@ -50,7 +50,7 @@ export class WizardJSApp {
       () => this.saveFile(),
       () => this.stopExecution()
     );
-    
+
     // Inicializar split resizer (usa event delegation, funciona con elementos dinámicos)
     mountSplitResizer();
     mountLanguageHandler();
@@ -68,7 +68,7 @@ export class WizardJSApp {
   private setupMenuListeners() {
     const api = window.electronAPI;
     if (!api) return; // No disponible fuera de Electron
-    
+
     api.onMenuNewFile(() => this.newFile());
     api.onMenuOpenFile(() => this.openFile());
     api.onMenuSaveFile(() => this.saveFile());
@@ -80,13 +80,15 @@ export class WizardJSApp {
   private showAbout() {
     // Modal simple de About
     const version = "1.0.0";
-    alert(`WizardJS v${version}\n\nThe Ultimate JavaScript & TypeScript Playground\n\nCreado por Francisco Brito`);
+    alert(
+      `WizardJS v${version}\n\nThe Ultimate JavaScript & TypeScript Playground\n\nCreado por Francisco Brito`
+    );
   }
 
   private applyEditorSettings() {
     const s = this.store.get();
     const lineHeight = 24; // Fijo para consistencia
-    
+
     this.editors.forEach((e) => {
       e.updateOptions({
         theme: s.theme,
@@ -104,7 +106,10 @@ export class WizardJSApp {
     document.querySelectorAll(".output-container").forEach((el) => {
       const h = el as HTMLElement;
       // Envolver font-family en comillas para CSS
-      h.style.setProperty("--editor-font-family", `"${s.fontFamily}", monospace`);
+      h.style.setProperty(
+        "--editor-font-family",
+        `"${s.fontFamily}", monospace`
+      );
       h.style.setProperty("--editor-font-size", `${s.fontSize}px`);
       h.style.setProperty("--editor-line-height", `${lineHeight}px`);
     });
@@ -210,7 +215,9 @@ export class WizardJSApp {
         this.editors.create(id, content);
         this.switchTo(id);
         // Actualizar título del tab en el DOM
-        const tabEl = document.querySelector(`[data-tab-id="${id}"].tab .tab-title`);
+        const tabEl = document.querySelector(
+          `[data-tab-id="${id}"].tab .tab-title`
+        );
         if (tabEl) tabEl.textContent = name;
       }, 50);
     } catch (err: any) {
@@ -250,10 +257,16 @@ export class WizardJSApp {
 
       // Actualizar estado del tab
       const fileName = fileHandle.name;
-      this.tabs.set(activeId, { title: fileName, file: fileName, isDirty: false });
-      
+      this.tabs.set(activeId, {
+        title: fileName,
+        file: fileName,
+        isDirty: false,
+      });
+
       // Actualizar título en el DOM
-      const tabEl = document.querySelector(`[data-tab-id="${activeId}"].tab .tab-title`);
+      const tabEl = document.querySelector(
+        `[data-tab-id="${activeId}"].tab .tab-title`
+      );
       if (tabEl) tabEl.textContent = fileName;
     } catch (err: any) {
       if (err.name !== "AbortError") {
@@ -290,7 +303,7 @@ const message = greet("Developer");
 console.log(message);
 
 // Try editing this code - it runs automatically!
-const numbers = [1, 2, 3, 4, 5];
+const numbers = [1, 2, 3, 4, 5] //?
 const doubled = numbers.map(n => n * 2);
 doubled`;
   }

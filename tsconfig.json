@@ -12,10 +12,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true
+    "strict": true,
+    "ignoreDeprecations": "6.0"
   },
-  "exclude": [
-    "src/legacy",
-    "src/renderer/services/renderer.ts"
-  ]
+  "exclude": ["src/legacy", "src/renderer/services/renderer.ts"]
 }

@@ -19,18 +19,22 @@
 ## Key Features
 
 ### Complete Language Support
+
 - **Native JavaScript** - Full ES2020+ execution
 - **Official TypeScript** - Microsoft transpiler integrated
 - **Automatic detection** of syntax
 - **Real-time transpilation** without configuration
+- **Magic Comment** with config
 
 ### Advanced Customization
+
 - **Multiple themes**: GitHub Dark, Tomorrow Night Bright
 - **5 professional fonts**: JetBrains Mono, Fira Code, Consolas, Monaco, Menlo
 - **Multi-language**: English & Spanish
 - **Persistent configuration** in real-time
 
 ### World-Class Editor
+
 - **Monaco Editor** (same as VS Code)
 - **Complete IntelliSense** with tooltips and autocompletion
 - **Advanced syntax highlighting**
@@ -38,12 +42,14 @@
 - **Bracket pair colorization** and indentation guides
 
 ### Intelligent Execution
+
 - **Smart auto-run** - Only executes complete code
 - **Security system** with timeouts and limits
 - **Complete sandbox** for isolated execution
 - **Detailed timestamps** and log types
 
 ### User Experience
+
 - **Multi-tab support** with independent editors
 - **Resizable split panels** between editor and output
 - **Complete file management** (New, Open, Save)
@@ -56,18 +62,18 @@
 
 Get the latest release for your platform:
 
-| Platform | Download |
-|----------|----------|
+| Platform                  | Download                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
 | **macOS (Apple Silicon)** | [WizardJS-macOS-AppleSilicon.zip](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
-| **macOS (Intel)** | [WizardJS-macOS-Intel.zip](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
-| **Windows** | [WizardJS-Setup.exe](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
-| **Linux (Debian/Ubuntu)** | [wizardjs.deb](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
-| **Linux (RedHat/Fedora)** | [wizardjs.rpm](https://github.com/FranciscoJBrito/WizardJS/releases/latest) |
+| **macOS (Intel)**         | [WizardJS-macOS-Intel.zip](https://github.com/FranciscoJBrito/WizardJS/releases/latest)        |
+| **Windows**               | [WizardJS-Setup.exe](https://github.com/FranciscoJBrito/WizardJS/releases/latest)              |
+| **Linux (Debian/Ubuntu)** | [wizardjs.deb](https://github.com/FranciscoJBrito/WizardJS/releases/latest)                    |
+| **Linux (RedHat/Fedora)** | [wizardjs.rpm](https://github.com/FranciscoJBrito/WizardJS/releases/latest)                    |
 
 ### macOS Installation
 
 > ⚠️ **Important Note for macOS Users**
-> 
+>
 > WizardJS is not signed with an Apple Developer ID certificate ($99/year). This is an open-source project and we prefer to invest resources in development rather than certificates. As a result, macOS will show a security warning when you try to open the app.
 
 **Step-by-step installation:**
@@ -81,8 +87,9 @@ Get the latest release for your platform:
 3. **Move** `WizardJS.app` to `/Applications`
 
 4. **Remove the quarantine attribute** (required for unsigned apps):
-   
+
    Open Terminal and run:
+
    ```bash
    xattr -cr /Applications/WizardJS.app
    ```
@@ -94,6 +101,7 @@ Get the latest release for your platform:
 When you download an app from the internet, macOS adds a "quarantine" attribute. Without an Apple Developer ID signature ($99/year), macOS marks the app as "damaged" even though it's perfectly safe. The `xattr -cr` command removes this quarantine flag.
 
 **Alternative method (if the above doesn't work):**
+
 1. Try to open the app (it will fail)
 2. Go to **System Preferences → Security & Privacy → General**
 3. Click **"Open Anyway"** next to the WizardJS message
@@ -103,6 +111,7 @@ When you download an app from the internet, macOS adds a "quarantine" attribute.
 ## Development
 
 ### Prerequisites
+
 - **Node.js** (version 20 or higher)
 - **npm** (included with Node.js)
 - **macOS, Windows, or Linux**
@@ -147,31 +156,34 @@ npm run clean
 
 ## Keyboard Shortcuts
 
-| Action | Shortcut | Description |
-|--------|----------|-------------|
-| **Execute** | `⌘R` / `Ctrl+R` | Runs the current code |
-| **Stop** | `⌘.` / `Ctrl+.` | Stops code execution |
-| **Save** | `⌘S` / `Ctrl+S` | Saves the current file |
-| **New Tab** | `⌘T` / `Ctrl+T` | Creates a new tab |
-| **Open** | `⌘O` / `Ctrl+O` | Opens an existing file |
-| **Clear** | `⌘K` / `Ctrl+K` | Clears the output |
+| Action       | Shortcut        | Description              |
+| ------------ | --------------- | ------------------------ |
+| **Execute**  | `⌘R` / `Ctrl+R` | Runs the current code    |
+| **Stop**     | `⌘.` / `Ctrl+.` | Stops code execution     |
+| **Save**     | `⌘S` / `Ctrl+S` | Saves the current file   |
+| **New Tab**  | `⌘T` / `Ctrl+T` | Creates a new tab        |
+| **Open**     | `⌘O` / `Ctrl+O` | Opens an existing file   |
+| **Clear**    | `⌘K` / `Ctrl+K` | Clears the output        |
 | **Settings** | `⌘,` / `Ctrl+,` | Opens the settings panel |
 
 ## Technology Stack
 
 ### Frontend & UI
+
 - **Monaco Editor** - VS Code editor integrated
 - **TypeScript** - Main project language
 - **CSS3** - Modern and responsive styles
 - **Font Awesome** - Professional iconography
 
 ### Build & Development
+
 - **Electron** - Cross-platform framework
 - **Electron Forge** - Complete toolchain
 - **Vite** - Ultra-fast build tool
 - **ESLint** - Code linting and quality
 
 ### Transpilation & Execution
+
 - **TypeScript Compiler** - Official transpiler
 - **Monaco TypeScript Worker** - IntelliSense
 - **Sandbox Execution** - Secure execution

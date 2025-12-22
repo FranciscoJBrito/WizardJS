@@ -1,192 +1,258 @@
-// Tipo de valor para colorear
-type ValueType = 'string' | 'number' | 'boolean' | 'null' | 'undefined' | 'object' | 'function';
+//## Ahora actualizo el output handler para manejar correctamente los números de línea:
+//typescript
+// output.ts - ACTUALIZADO
+
+type ValueType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "null"
+  | "undefined"
+  | "object"
+  | "function";
 
 interface OutputItem {
   text: string;
   type: ValueType;
 }
 
+// Estado para acumular outputs en la misma línea
+const lineOutputs = new Map<string, Map<number, OutputItem[]>>();
+
+function wrapTextSegments(text: string, max = 80): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < text.length; i += max) {
+    out.push(text.slice(i, i + max));
+  }
+  return out;
+}
+
 function getValueType(val: any): ValueType {
-  if (val === null) return 'null';
-  if (val === undefined) return 'undefined';
-  if (typeof val === 'string') return 'string';
-  if (typeof val === 'number') return 'number';
-  if (typeof val === 'boolean') return 'boolean';
-  if (typeof val === 'function') return 'function';
-  return 'object';
+  if (val === null) return "null";
+  if (val === undefined) return "undefined";
+  if (typeof val === "string") return "string";
+  if (typeof val === "number") return "number";
+  if (typeof val === "boolean") return "boolean";
+  if (typeof val === "function") return "function";
+  return "object";
 }
 
 function stringifyWithType(val: any): OutputItem {
   const type = getValueType(val);
   let text: string;
-  
+
   switch (type) {
-    case 'null': text = 'null'; break;
-    case 'undefined': text = 'undefined'; break;
-    case 'string': text = `'${val}'`; break;
-    case 'boolean': text = String(val); break;
-    case 'number': text = String(val); break;
-    case 'function': text = '[Function]'; break;
-    case 'object':
-      try { text = JSON.stringify(val); } 
-      catch { text = String(val); }
+    case "null":
+      text = "null";
       break;
-    default: text = String(val);
+    case "undefined":
+      text = "undefined";
+      break;
+    case "string":
+      text = `'${val}'`;
+      break;
+    case "boolean":
+    case "number":
+      text = String(val);
+      break;
+    case "function":
+      text = "[Function]";
+      break;
+    case "object":
+      try {
+        text = JSON.stringify(val, null, 2);
+      } catch {
+        text = String(val);
+      }
+      break;
+    default:
+      text = String(val);
   }
-  
+
   return { text, type };
 }
 
-// Estado para acumular outputs en la misma línea
-const lineOutputs = new Map<string, Map<number, OutputItem[]>>();
-let lastResultLine = new Map<string, number>();
-
-export function appendOutput(tabId: string, type: string, args: any[]) {
-  const c = document.querySelector(
+/**
+ * Punto de entrada principal para añadir output a la consola
+ * Ahora maneja correctamente los números de línea
+ */
+export function appendOutput(tabId: string, type: string, args: any[]): void {
+  const container = document.querySelector(
     `[data-tab-id="${tabId}"].output-container`
   ) as HTMLElement | null;
-  if (!c) return;
 
-  // Manejar errores de forma especial (con code-frame)
+  if (!container) return;
+
+  // Manejo especial de errores
   if (type === "error") {
-    renderError(c, args[0]);
+    renderError(container, args[0]);
     return;
   }
 
-  // Inicializar estado si no existe
+  // Inicializar estado del tab
   if (!lineOutputs.has(tabId)) {
     lineOutputs.set(tabId, new Map());
-    lastResultLine.set(tabId, 0);
   }
+
   const outputs = lineOutputs.get(tabId)!;
 
-  // Resultado con número de línea (expresiones top-level)
-  if (type === "result" && typeof args?.[0] === "number") {
-    const resultLine = args[0] as number;
-    const val = args[1];
-    
-    if (!outputs.has(resultLine)) {
-      outputs.set(resultLine, []);
+  // RESULT o MAGIC: primer argumento es el número de línea
+  if ((type === "result" || type === "magic") && typeof args[0] === "number") {
+    const lineNum = args[0];
+    const value = args[1];
+
+    if (!outputs.has(lineNum)) {
+      outputs.set(lineNum, []);
     }
-    outputs.get(resultLine)!.push(stringifyWithType(val));
-    lastResultLine.set(tabId, resultLine);
-    
-    renderOutput(c, tabId);
+
+    outputs.get(lineNum)!.push(stringifyWithType(value));
+    renderOutput(container, tabId);
     return;
   }
 
-  // Console.log - verificar si tiene número de línea como primer argumento
-  let consoleLine: number | undefined;
-  let realArgs = args;
-  
-  if (typeof args[0] === "number") {
-    consoleLine = args[0];
-    realArgs = args.slice(1);
+  // CONSOLE.LOG: primer argumento es el número de línea si está habilitado
+  if (typeof args[0] === "number" && args.length > 1) {
+    const lineNum = args[0];
+    const realArgs = args.slice(1);
+
+    if (!outputs.has(lineNum)) {
+      outputs.set(lineNum, []);
+    }
+
+    for (const arg of realArgs) {
+      outputs.get(lineNum)!.push(stringifyWithType(arg));
+    }
+
+    renderOutput(container, tabId);
+    return;
   }
-  
-  const targetLine = consoleLine || lastResultLine.get(tabId) || 1;
-  
-  if (!outputs.has(targetLine)) {
-    outputs.set(targetLine, []);
+
+  // Sin número de línea - usar línea 1 por defecto
+  if (!outputs.has(1)) {
+    outputs.set(1, []);
   }
-  
-  // Añadir cada argumento con su tipo
-  for (const arg of realArgs) {
-    outputs.get(targetLine)!.push(stringifyWithType(arg));
+
+  for (const arg of args) {
+    outputs.get(1)!.push(stringifyWithType(arg));
   }
-  
-  renderOutput(c, tabId);
+
+  renderOutput(container, tabId);
 }
 
-// Renderizar error con code-frame
-function renderError(container: HTMLElement, errorMsg: string) {
-  // Limpiar output anterior
+function renderError(container: HTMLElement, errorMsg: string): void {
   container.innerHTML = "";
-  
+
   const errorDiv = document.createElement("div");
   errorDiv.className = "output-error-container";
-  
-  // Separar el mensaje del frame
-  const parts = String(errorMsg).split('\n\n');
+
+  const parts = String(errorMsg).split("\n\n");
   const mainMessage = parts[0] || errorMsg;
-  const codeFrame = parts.slice(1).join('\n\n');
-  
-  // Mensaje principal del error
+  const codeFrame = parts.slice(1).join("\n\n");
+
   const msgDiv = document.createElement("div");
   msgDiv.className = "output-error";
   msgDiv.textContent = mainMessage;
   errorDiv.appendChild(msgDiv);
-  
-  // Code frame si existe
-  if (codeFrame) {
+
+  if (codeFrame.trim()) {
     const frameDiv = document.createElement("pre");
     frameDiv.className = "output-error-frame";
     frameDiv.textContent = codeFrame;
     errorDiv.appendChild(frameDiv);
   }
-  
+
   container.appendChild(errorDiv);
 }
 
-function renderOutput(container: HTMLElement, tabId: string) {
-  const outputs = lineOutputs.get(tabId);
-  if (!outputs) return;
-  
-  // Limpiar y re-renderizar
-  container.innerHTML = "";
-  
-  // Obtener la línea máxima
-  const maxLine = outputs.size > 0 ? Math.max(...outputs.keys()) : 0;
-  
-  for (let i = 1; i <= maxLine; i++) {
-    const row = document.createElement("div");
-    row.className = "output-line";
-    
-    const lno = document.createElement("span");
-    lno.className = "output-lno";
-    lno.textContent = String(i);
-    
-    const content = document.createElement("div");
-    content.className = "output-content";
-    
-    const lineContent = outputs.get(i);
-    if (lineContent && lineContent.length > 0) {
-      // Crear spans coloreados para cada valor
-      lineContent.forEach((item, idx) => {
-        if (idx > 0) {
-          content.appendChild(document.createTextNode("  "));
-        }
-        const span = document.createElement("span");
-        span.className = `output-${item.type}`;
-        span.textContent = item.text;
-        content.appendChild(span);
-      });
+function createOutputLine(
+  lineNumber: string,
+  item: OutputItem
+): HTMLDivElement {
+  const row = document.createElement("div");
+  row.className = "output-line";
+
+  const lno = document.createElement("span");
+  lno.className = "output-lno";
+  lno.textContent = lineNumber;
+
+  const content = document.createElement("div");
+  content.className = "output-content";
+
+  const span = document.createElement("span");
+  span.className = `output-${item.type}`;
+  span.textContent = item.text;
+
+  content.appendChild(span);
+  row.appendChild(lno);
+  row.appendChild(content);
+
+  return row;
+}
+
+function renderLineItems(
+  container: HTMLElement,
+  lineNumber: number,
+  items: OutputItem[]
+): void {
+  if (items.length === 0) return;
+
+  const segments: OutputItem[] = [];
+
+  for (const item of items) {
+    const wrappedLines = wrapTextSegments(item.text, 80);
+    for (const wrappedText of wrappedLines) {
+      segments.push({ text: wrappedText, type: item.type });
     }
-    
-    row.appendChild(lno);
-    row.appendChild(content);
-    container.appendChild(row);
+  }
+
+  if (segments.length > 0) {
+    const mainRow = createOutputLine(String(lineNumber), segments[0]);
+    container.appendChild(mainRow);
+  }
+
+  for (let i = 1; i < segments.length; i++) {
+    const extraRow = createOutputLine("", segments[i]); // Sin número para líneas continuadas
+    container.appendChild(extraRow);
   }
 }
 
-export function clearOutput(tabId: string) {
-  const c = document.querySelector(
+function renderOutput(container: HTMLElement, tabId: string): void {
+  const outputs = lineOutputs.get(tabId);
+  if (!outputs || outputs.size === 0) return;
+
+  container.innerHTML = "";
+
+  const maxLine = Math.max(...outputs.keys());
+
+  for (let lineNum = 1; lineNum <= maxLine; lineNum++) {
+    const items = outputs.get(lineNum);
+    if (items && items.length > 0) {
+      renderLineItems(container, lineNum, items);
+    }
+  }
+}
+
+export function clearOutput(tabId: string): void {
+  const container = document.querySelector(
     `[data-tab-id="${tabId}"].output-container`
   ) as HTMLElement | null;
-  if (c) c.innerHTML = "";
-  
-  // Limpiar estado
+
+  if (container) {
+    container.innerHTML = "";
+  }
+
   lineOutputs.delete(tabId);
-  lastResultLine.delete(tabId);
 }
 
 export const appendSecurity = (tabId: string, msg: string) => {
-  const c = document.querySelector(
+  const container = document.querySelector(
     `[data-tab-id="${tabId}"].output-container`
   ) as HTMLElement | null;
-  if (!c) return;
+
+  if (!container) return;
+
   const line = document.createElement("div");
   line.className = "output-security-error";
   line.textContent = `🛡️ ${msg}`;
-  c.appendChild(line);
+  container.appendChild(line);
 };

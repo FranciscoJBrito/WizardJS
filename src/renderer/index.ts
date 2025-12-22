@@ -1,4 +1,3 @@
-import "../index.css";
 import { WizardJSApp } from "./app/WizardJSApp";
 
 if (document.readyState === "loading") {
